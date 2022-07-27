@@ -1,0 +1,25 @@
+version: "3"
+services:
+  api:
+    container_name: api_sample
+    build:
+      context: ./api-sample/
+      dockerfile: Dockerfile
+    environment:
+      PORT: 4000
+    volumes:
+      - ./api-sample:/api
+    ports:
+      - "4000:4000"
+    command:
+      - /bin/bash
+      - -c
+      - |
+        bundle config set path 'vendor/bundle' || bundle check --path=vendor/bundle || bundle install --jobs 8
+        rm -rf ./tmp/pids/server.pid
+        bin/rails server -b 0.0.0.0 -p 4000
+    networks:
+      - api_sample_network
+
+networks:
+  api_sample_network:
